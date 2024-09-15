@@ -43,8 +43,13 @@ export const bots = pgTable('bots', {
 
 export const sessions = pgTable('sessions', {
     id: text('id').primaryKey(),
-    userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
-    expiresAt: timestamp('expires_at').notNull(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id),
+    expiresAt: timestamp("expires_at", {
+        withTimezone: true,
+        mode: "date"
+    }).notNull(),
     email: text('email').notNull(),
     name: text('name').notNull(),
 });
