@@ -23,7 +23,7 @@ export default async function SettingLayout({
   }
   return (
     <div className='flex flex-grow gap-4 md:gap-0 flex-col-reverse justify-between md:flex-row'>
-      <div className='flex justify-between border rounded-lg border-border flex-row md:flex-col p-3 m-2 md:m-0 md:mb-4'>
+      <div className='flex justify-between border border-l-0 rounded-lg border-border rounded-tl-none rounded-bl-none flex-row md:flex-col p-3 m-2 md:m-0 md:mb-4'>
         <SidebarButtons />
         <div className='flex items-center justify-center'>
           <DeleteBot user={user} />

@@ -1,5 +1,6 @@
-import { pgTable, text, integer, serial, boolean, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, serial, boolean, timestamp, varchar, vector, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 
 export const users = pgTable('users', {
     id: text('id').primaryKey(),
@@ -62,12 +63,35 @@ export const visitors = pgTable('visitors', {
     createdAt: timestamp('created_at').defaultNow(),
 });
 
+
+export const embeddings = pgTable(
+    'embeddings',
+    {
+        id: varchar('id', { length: 191 })
+            .primaryKey()
+            .$defaultFn(() => randomUUID()),
+        botId: text("bot_id")
+            .notNull()
+            .references(() => bots.id),
+        content: text('content').notNull(),
+        embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+    },
+    table => ({
+        embeddingIndex: index('embeddingIndex').using(
+            'hnsw',
+            table.embedding.op('vector_cosine_ops'),
+        ),
+    }),
+);
+
+
 export const userRelations = relations(users, ({ one, many }) => ({
     agent: one(agents, {
         fields: [users.id],
         references: [agents.userId],
     }),
     sessions: many(sessions),
+    embeddings: many(embeddings), // Adding user-embedding relation
 }));
 
 export const agentRelations = relations(agents, ({ one }) => ({
@@ -86,12 +110,26 @@ export const botRelations = relations(bots, ({ one, many }) => ({
         fields: [bots.agentId],
         references: [agents.id],
     }),
-    visitors: many(visitors),
+    visitors: many(visitors), // Adding bot-visitor relation
 }));
 
 export const visitorRelations = relations(visitors, ({ one }) => ({
     bot: one(bots, {
         fields: [visitors.botId],
         references: [bots.id],
+    }),
+}));
+
+export const sessionRelations = relations(sessions, ({ one }) => ({
+    user: one(users, {
+        fields: [sessions.userId],
+        references: [users.id],
+    }),
+}));
+
+export const embeddingRelations = relations(embeddings, ({ one }) => ({
+    bot: one(users, {
+        fields: [embeddings.botId],
+        references: [users.id],
     }),
 }));

@@ -1,11 +1,5 @@
 export const templates = {
-  qaTemplate: ` 
-you are a helpful assistant, please answer based on given context.
-
-    CONTEXT: {summaries}
-
-    QUESTION: {question}
-
-    Final Answer: How may I assist you?
- `,
+  base: `You are a helpful assistant. Check your knowledge base before answering any questions.
+    Only respond to questions using information from tool calls.
+    if no relevant information is found in the tool calls, respond, "Sorry, I don't know."`,
 };

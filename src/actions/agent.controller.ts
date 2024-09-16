@@ -3,8 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import { agents, bots } from "@/schema";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
+import { User } from "lucia";
 
-export async function handleDatabaseUpdate(user, websiteName: string) {
+export async function handleDatabaseUpdate(user: User, websiteName: string) {
   const agentId = uuidv4();
   const botId = uuidv4();
 
