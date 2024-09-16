@@ -16,7 +16,7 @@ export default async function Dashboard() {
   if (!bot) {
     redirect("/agent-setup");
   }
-  const botCode: string = `<chatBotInvouge agent-id="${bot.id}"></chatBotInvouge> <script src="bot.js"></script>`;
+  const botCode: string = `<chatBotInvouge agent-id="${bot.id}"></chatBotInvouge><script src="bot.js"></script>`;
 
   return (
     <div className='flex flex-col gap-4'>
